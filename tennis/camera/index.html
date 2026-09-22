@@ -1,5 +1,5 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Camera AR · The Tennis Formula</title>
+<title>AR on Your Book · The Tennis Formula</title>
 <script src="./aframe.min.js"></script>
 <script src="./mindar-image-aframe.prod.js"></script>
 <style>
@@ -8,30 +8,62 @@ html,body{height:100%;overflow:hidden;background:#0e0e12;}
 #bar{position:fixed;top:0;left:0;right:0;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:rgba(8,10,18,.75);font-family:Arial,Helvetica,sans-serif;}
 #bar .t{color:#7bffdf;font-weight:900;font-size:13px;letter-spacing:1px;}
 #bar a{color:#B8860B;font-weight:900;font-size:12px;text-decoration:none;letter-spacing:1px;}
-#hud{position:fixed;bottom:14px;left:0;right:0;z-index:10;display:flex;justify-content:center;gap:10px;font-family:Arial,Helvetica,sans-serif;}
-#hud .c{background:rgba(8,10,18,.8);border:1px solid #2a3a5a;border-radius:10px;padding:8px 16px;text-align:center;}
-#hud .v{color:#ffe000;font-weight:900;font-size:18px;}
-#hud .l{color:#8a9aaa;font-size:9px;letter-spacing:1px;}
+#hud{position:fixed;bottom:14px;left:0;right:0;z-index:10;display:flex;flex-direction:column;align-items:center;gap:8px;font-family:Arial,Helvetica,sans-serif;}
+#modes{display:flex;gap:8px;}
+#modes button{background:rgba(8,10,18,.85);border:1.5px solid #2a3a5a;border-radius:10px;color:#8a9aaa;font-weight:900;font-size:12px;letter-spacing:1px;padding:9px 16px;}
+#modes button.on{border-color:#7bffdf;color:#7bffdf;}
+#hint{background:rgba(8,10,18,.8);border:1px solid #2a3a5a;border-radius:10px;padding:7px 16px;color:#c8d8ea;font-size:11px;letter-spacing:1px;text-align:center;}
 #start{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0e0e12;font-family:Arial,Helvetica,sans-serif;text-align:center;padding:20px;}
 #start .h{color:#7bffdf;font-size:22px;font-weight:900;letter-spacing:1px;margin-bottom:10px;}
 #start .w{color:#8a9aaa;font-size:13px;line-height:1.5;max-width:420px;margin-bottom:22px;}
 #start button{background:#7bffdf;color:#062a22;border:none;font-weight:900;font-size:17px;letter-spacing:2px;padding:16px 34px;border-radius:12px;}
-#start .v{color:#3a4a5a;font-size:10px;margin-top:18px;letter-spacing:1px;}
+#start #swap{background:none;border:none;color:#B8860B;font-weight:900;font-size:12px;letter-spacing:1px;margin-top:16px;padding:8px;}
+#start .v{color:#3a4a5a;font-size:10px;margin-top:14px;letter-spacing:1px;}
 #dbg{position:fixed;top:52px;left:8px;right:8px;z-index:30;color:#ff8080;font:12px Arial;text-shadow:0 1px 3px #000;white-space:pre-wrap;pointer-events:none;}
 </style></head><body>
-<div id="bar"><span class="t">THE SERVE SECRET &middot; CAMERA AR</span><a href="/tennis/cover/">&#8592; BACK</a></div>
-<div id="hud"><div class="c"><div class="l" style="font-size:11px;color:#c8d8ea;">PAGE 63, PLAYING ITSELF OVER YOUR BOOK</div></div></div>
+<div id="bar"><span class="t" id="title">AR ON YOUR BOOK</span><a href="/tennis/">&#8592; BACK</a></div>
+<div id="hud">
+  <div id="hint">POINT AT THE FRONT COVER</div>
+  <div id="modes">
+    <button id="mCourt">&#127934; THE COURT</button>
+    <button id="mServe">&#128640; SERVE SECRET</button>
+  </div>
+</div>
 <div id="dbg"></div>
 <div id="start">
-  <div class="h">THE SERVE SECRET, OFF THE PAPER</div>
-  <div class="w">Point your phone at the front cover. The page 63 lesson floats over the book and plays itself: the flat serve dies into the net, the brushed serve spins in. Forever.</div>
+  <div class="h" id="sh"></div>
+  <div class="w" id="sw"></div>
   <button id="go">TAP TO START</button>
-  <div class="v">v7 &middot; lesson build</div>
+  <button id="swap"></button>
+  <div class="v">v8 &middot; two experiences, one cover</div>
 </div>
-<a-scene mindar-image="imageTargetSrc: ./targets.mind; autoStart: no; uiScanning: yes; uiLoading: no;" color-space="sRGB" renderer="alpha: true; colorManagement: true" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false" cursor="rayOrigin: mouse; fuse: false" raycaster="objects: .tappable; near: 0.01; far: 20">
+<a-scene mindar-image="imageTargetSrc: ./targets.mind; autoStart: no; uiScanning: yes; uiLoading: no;" color-space="sRGB" renderer="alpha: true; colorManagement: true" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
   <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
   <a-entity id="anchor" mindar-image-target="targetIndex: 0">
-    <a-entity id="lesson" position="0 0.05 0.22" rotation="-12 0 0">
+
+    <!-- MODE 1: the page-39 court, off the paper, spinnable -->
+    <a-entity id="court3d" position="0 0.05 0.3" visible="true">
+      <a-entity id="courtrot">
+        <a-plane color="#2a5298" width="1.24" height="0.59" position="0 0 0"></a-plane>
+        <a-plane color="#fff" width="1.2" height="0.012" position="0 0.275 0.002"></a-plane>
+        <a-plane color="#fff" width="1.2" height="0.012" position="0 -0.275 0.002"></a-plane>
+        <a-plane color="#fff" width="0.012" height="0.562" position="-0.6 0 0.002"></a-plane>
+        <a-plane color="#fff" width="0.012" height="0.562" position="0.6 0 0.002"></a-plane>
+        <a-plane color="#fff" width="1.2" height="0.008" position="0 0.205 0.002"></a-plane>
+        <a-plane color="#fff" width="1.2" height="0.008" position="0 -0.205 0.002"></a-plane>
+        <a-plane color="#fff" width="0.014" height="0.562" position="0 0 0.003"></a-plane>
+        <a-plane color="#fff" width="0.008" height="0.41" position="-0.32 0 0.002"></a-plane>
+        <a-plane color="#fff" width="0.008" height="0.41" position="0.32 0 0.002"></a-plane>
+        <a-plane color="#fff" width="0.64" height="0.006" position="0 0 0.002"></a-plane>
+        <a-text value="23.77 m" color="#ffe000" position="0 0.34 0.004" scale="0.26 0.26 0.26" align="center"></a-text>
+        <a-text value="10.97 m" color="#ffe000" position="0.68 0 0.004" rotation="0 0 90" scale="0.26 0.26 0.26" align="center"></a-text>
+        <a-text value="6.40 m" color="#ffea00" position="-0.16 0.1 0.004" scale="0.17 0.17 0.17" align="center"></a-text>
+        <a-sphere id="cball" color="#dfff4f" radius="0.024" position="-0.55 0 0.03"></a-sphere>
+      </a-entity>
+    </a-entity>
+
+    <!-- MODE 2: the page-63 serve secret lesson -->
+    <a-entity id="lesson" position="0 0.05 0.22" rotation="-12 0 0" visible="false">
       <a-plane color="#0e1626" opacity="0.82" width="1.5" height="0.85" position="0 0 -0.01" radius="0.04"></a-plane>
       <a-text value="THE SERVE SECRET &#183; PAGE 63" color="#ff8c42" position="0 0.34 0" scale="0.25 0.25 0.25" align="center"></a-text>
       <a-plane color="#4a5f80" width="1.3" height="0.012" position="0 -0.25 0"></a-plane>
@@ -45,6 +77,7 @@ html,body{height:100%;overflow:hidden;background:#0e0e12;}
       <a-sphere id="sball" color="#dfff4f" radius="0.028" position="-0.58 0.17 0.02"></a-sphere>
       <a-text id="verdict" value="" color="#ffffff" position="0 0.22 0.02" scale="0.22 0.22 0.22" align="center"></a-text>
     </a-entity>
+
     <a-text value="formulamath.com" color="#B8860B" position="0 -0.62 0.2" scale="0.18 0.18 0.18" align="center"></a-text>
   </a-entity>
 </a-scene>
@@ -53,13 +86,58 @@ var dbg=document.getElementById('dbg');
 function say(m){dbg.textContent=(dbg.textContent+' | '+m).slice(-700);}
 window.addEventListener('error',function(e){say('ERR: '+e.message);});
 window.addEventListener('unhandledrejection',function(e){say('REJ: '+(e.reason&&e.reason.message||e.reason));});
-if(typeof AFRAME==='undefined'){document.getElementById('start').querySelector('.w').textContent='The 3D engine did not load. Check your connection and reload.';}
+if(typeof AFRAME==='undefined'){document.getElementById('sw').textContent='The 3D engine did not load. Check your connection and reload.';}
 
-// the page-63 lesson, on loop: flat into the net, spin clears it
+// ----- the two experiences, one switch -----
+var MODE={
+ court:{title:'THE COURT &middot; CAMERA AR',h:'THE COURT, OFF THE PAPER',
+  w:'Point your phone at the front cover. The page 39 court rises off your book in 3D, ball in flight. Drag anywhere to spin it, exactly like the screen version.',
+  hint:'DRAG TO SPIN &middot; 23.77 m &times; 10.97 m',swap:'OR: THE SERVE SECRET &#9654;'},
+ serve:{title:'THE SERVE SECRET &middot; CAMERA AR',h:'THE SERVE SECRET, OFF THE PAPER',
+  w:'Point your phone at the front cover. The page 63 lesson floats over the book and plays itself: the flat serve dies into the net, the brushed serve spins in. Forever.',
+  hint:'PAGE 63, PLAYING OVER YOUR BOOK',swap:'OR: THE COURT IN 3D &#9654;'}};
+var mode=(new URLSearchParams(location.search).get('mode')==='serve')?'serve':'court';
+function setMode(m){mode=m;var c=MODE[m];
+ document.getElementById('title').innerHTML=c.title;
+ document.getElementById('sh').innerHTML=c.h;
+ document.getElementById('sw').innerHTML=c.w;
+ document.getElementById('hint').innerHTML=c.hint;
+ document.getElementById('swap').innerHTML=c.swap;
+ document.getElementById('mCourt').className=(m==='court')?'on':'';
+ document.getElementById('mServe').className=(m==='serve')?'on':'';
+ var ct=document.getElementById('court3d'),ls=document.getElementById('lesson');
+ if(ct)ct.setAttribute('visible',m==='court');
+ if(ls)ls.setAttribute('visible',m==='serve');}
+setMode(mode);
+document.getElementById('mCourt').addEventListener('click',function(){setMode('court');});
+document.getElementById('mServe').addEventListener('click',function(){setMode('serve');});
+document.getElementById('swap').addEventListener('click',function(){setMode(mode==='court'?'serve':'court');});
+
+// ----- court mode: drag to spin, same feel as /tennis/39 -----
+var rx=55,rz=0,dragging=false,lx=0,ly=0;
+function applyRot(){var e=document.getElementById('courtrot');
+ if(e&&e.object3D){e.object3D.rotation.set(-rx*Math.PI/180,0,-rz*Math.PI/180);}}
+applyRot();
+function overUI(t){while(t){if(t.id==='bar'||t.id==='hud'||t.id==='start')return true;t=t.parentElement;}return false;}
+window.addEventListener('pointerdown',function(e){if(mode!=='court'||overUI(e.target))return;dragging=true;lx=e.clientX;ly=e.clientY;});
+window.addEventListener('pointermove',function(e){if(!dragging)return;
+ rz+=(e.clientX-lx)*0.4;rx-=(e.clientY-ly)*0.3;rx=Math.max(15,Math.min(80,rx));
+ lx=e.clientX;ly=e.clientY;applyRot();});
+window.addEventListener('pointerup',function(){dragging=false;});
+
+// court ball: down the full length, over and over
+(function(){var t=0;
+ setInterval(function(){if(mode!=='court')return;
+  var b=document.getElementById('cball');if(!b||!b.object3D)return;
+  t+=0.033;var p=(t%3)/3;
+  b.object3D.position.set(-0.55+1.1*p,0,0.03+0.2*Math.sin(Math.PI*p));},33);})();
+
+// serve lesson, on loop: flat into the net, spin clears it
 (function(){
  var phase=0,t0=Date.now();
  function setV(txt,col){var v=document.getElementById('verdict');if(v){v.setAttribute('value',txt);v.setAttribute('color',col);}}
  setInterval(function(){
+  if(mode!=='serve')return;
   var b=document.getElementById('sball');
   if(!b||!b.object3D)return;
   var el=(Date.now()-t0)/1000;
@@ -79,6 +157,7 @@ if(typeof AFRAME==='undefined'){document.getElementById('start').querySelector('
    b.object3D.position.set(-0.58,0.17,0.02);} }
  },33);
 })();
+
 document.getElementById('go').addEventListener('click',function(){
  var sc=document.querySelector('a-scene');
  var kick=function(){
@@ -87,6 +166,7 @@ document.getElementById('go').addEventListener('click',function(){
   sc.addEventListener('arError',function(){say('AR ERROR: camera failed to start (permission denied or unsupported)');});
   document.getElementById('start').style.display='none';
   try{sys.start();}catch(e){say('START ERR: '+e.message);}
+  applyRot();
   var fix=function(){
    var v=document.querySelector('video');
    if(!v){return false;}
