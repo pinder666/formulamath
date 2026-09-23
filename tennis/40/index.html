@@ -1,55 +1,118 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Fire the Ball — The Tennis Formula</title><style>
+<title>Fire the Ball · The Tennis Formula</title>
+<script src="./aframe.min.js"></script>
+<style>
 *{margin:0;padding:0;box-sizing:border-box;}
-body{background:#0e0e12;color:#fff;font-family:Arial,Helvetica,sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:24px 12px 40px;}
-h1{font-size:24px;font-weight:900;color:#76ff03;}
-.sub{color:#8a9aaa;font-size:13px;margin:6px 0 16px;text-align:center;}
-svg{width:min(92vw,560px);display:block;}
-.controls{display:flex;align-items:center;gap:14px;margin-top:16px;width:min(92vw,560px);}
-input[type=range]{flex:1;accent-color:#76ff03;}
-.deg{color:#ffe000;font-weight:900;font-size:22px;width:64px;text-align:center;}
-button{background:#76ff03;color:#12300a;border:none;font-weight:900;font-size:15px;padding:12px 26px;border-radius:10px;margin-top:14px;letter-spacing:1px;}
-#result{color:#c8d8ea;font-size:13px;margin-top:12px;min-height:20px;text-align:center;}
-a.back{color:#B8860B;font-size:12px;font-weight:900;text-decoration:none;margin-top:22px;letter-spacing:1px;}
+html,body{height:100%;}
+body{background:#0e0e12;color:#fff;font-family:Arial,Helvetica,sans-serif;height:100dvh;overflow:hidden;display:flex;flex-direction:column;align-items:center;padding:clamp(8px,1.6dvh,20px) 12px;}
+h1{font-size:clamp(15px,2.7dvh,24px);font-weight:900;color:#76ff03;}
+.sub{color:#8a9aaa;font-size:clamp(10px,1.5dvh,13px);margin:3px 0 clamp(4px,1dvh,12px);text-align:center;max-width:560px;line-height:1.4;}
+.fit{flex:1;min-height:70px;width:min(92vw,560px);position:relative;border-radius:10px;overflow:hidden;background:#0d1520;}
+.fit a-scene{width:100%;height:100%;}
+.controls{display:flex;align-items:center;gap:10px;margin-top:clamp(4px,1dvh,12px);width:min(92vw,560px);}
+input[type=range]{flex:1;accent-color:#76ff03;min-width:60px;}
+#num{width:clamp(56px,9dvh,74px);background:#141e30;border:1.5px solid #76ff03;border-radius:8px;color:#ffe000;font-weight:900;font-size:clamp(14px,2.2dvh,20px);text-align:center;padding:clamp(5px,1dvh,8px) 4px;}
+.deg{font-size:clamp(11px,1.6dvh,15px);color:#8a9aaa;font-weight:700;}
+button{background:#76ff03;color:#12300a;border:none;font-weight:900;font-size:clamp(12px,1.8dvh,15px);padding:clamp(8px,1.4dvh,12px) 22px;border-radius:10px;letter-spacing:1px;}
+#result{color:#c8d8ea;font-size:clamp(10px,1.5dvh,13px);margin-top:clamp(4px,1dvh,10px);height:clamp(30px,5.5dvh,42px);overflow:hidden;text-align:center;max-width:560px;line-height:1.35;}
+a.back{color:#B8860B;font-size:clamp(10px,1.4dvh,12px);font-weight:900;text-decoration:none;margin-top:clamp(3px,0.8dvh,10px);letter-spacing:1px;}
 </style></head><body>
 <h1>FIRE THE BALL AT YOUR ANGLE</h1>
-<div class="sub">Page 40. Pick the angle from the centre mark. Watch the geometry decide.</div>
-<svg viewBox="0 0 260 150">
-  <rect x="10" y="6" width="240" height="110" fill="#2a5298" stroke="#fff" stroke-width="1.6" rx="1"/>
-  <rect x="10" y="19" width="240" height="84" fill="none" stroke="#fff" stroke-width="0.9"/>
-  <line x1="130" y1="6" x2="130" y2="116" stroke="#fff" stroke-width="1.6"/>
-  <line x1="66" y1="19" x2="66" y2="103" stroke="#fff" stroke-width="0.9"/>
-  <line x1="194" y1="19" x2="194" y2="103" stroke="#fff" stroke-width="0.9"/>
-  <line x1="66" y1="61" x2="194" y2="61" stroke="#fff" stroke-width="0.9"/>
-  <circle cx="18" cy="61" r="4.5" fill="#dfff4f"/>
-  <line id="aim" x1="18" y1="61" x2="120" y2="61" stroke="#ffe000" stroke-width="1" stroke-dasharray="3,2"/>
-  <circle id="ball" cx="18" cy="61" r="4" fill="#fff" opacity="0"/>
-  <text id="deglabel" x="52" y="52" fill="#ffe000" font-size="8" font-weight="bold">0&#176;</text>
-  <text x="130" y="132" fill="#8a9aaa" font-size="8" text-anchor="middle">crosscourt = longer diagonal = lower net in the middle = bigger target</text>
-  <text x="130" y="146" fill="#5a6a7a" font-size="7" text-anchor="middle">the same maths you used on page 40</text>
-</svg>
-<div class="controls">
-  <input id="angle" type="range" min="-24" max="24" value="0"/>
-  <div class="deg" id="deg">0&#176;</div>
+<div class="sub">Type the angle you calculated on page 40, or slide it. Then FIRE and watch the geometry decide.</div>
+
+<div class="fit">
+  <a-scene embedded renderer="alpha:true;colorManagement:true" vr-mode-ui="enabled:false" device-orientation-permission-ui="enabled:false" loading-screen="enabled:false">
+    <a-assets>
+      <a-asset-item id="court-model" src="./tennis-court-cement.glb"></a-asset-item>
+    </a-assets>
+    <!-- camera overhead so the angle is clearly visible, slight tilt for 3D depth -->
+    <a-camera position="0 2.6 0.5" rotation="-80 0 0" look-controls="enabled:false" wasd-controls="enabled:false" fov="50"></a-camera>
+    <a-entity id="courtEnt" rotation="0 0 0">
+      <a-gltf-model id="court3d" src="#court-model" position="0 0 0" scale="0.06 0.06 0.06"></a-gltf-model>
+      <!-- aim line shown as a thin box, updated by JS -->
+      <a-box id="aimline" color="#ffe000" width="0.01" height="0.005" depth="0.01" opacity="0.7" position="0 0.06 0"></a-box>
+      <!-- the ball, hidden until FIRE -->
+      <a-sphere id="ball3d" color="#dfff4f" radius="0.04" position="-0.71 0.1 0" visible="false"></a-sphere>
+    </a-entity>
+    <a-light type="ambient" color="#cce8ff" intensity="1.4"></a-light>
+    <a-light type="directional" position="1 5 1" intensity="1.0"></a-light>
+  </a-scene>
 </div>
-<button id="fire">FIRE</button>
+
+<div class="controls">
+  <input id="angle" type="range" min="-60" max="60" value="0"/>
+  <input id="num" type="number" min="-60" max="60" value="0"/>
+  <div class="deg">&#176;</div>
+  <button id="fire">FIRE</button>
+</div>
 <div id="result"></div>
 <a class="back" href="/tennis/">&#8592; THE AR COURT</a>
+
 <script>
-var slider=document.getElementById('angle'),deg=document.getElementById('deg'),aim=document.getElementById('aim'),lab=document.getElementById('deglabel');
-var ball=document.getElementById('ball'),res=document.getElementById('result'),firing=false;
-function update(){var a=+slider.value;deg.innerHTML=a+'&#176;';var rad=a*Math.PI/180;
- var x2=18+110*Math.cos(rad),y2=61+110*Math.sin(rad);
- aim.setAttribute('x2',x2);aim.setAttribute('y2',y2);lab.innerHTML=Math.abs(a)+'&#176;';}
-slider.addEventListener('input',update);update();
-document.getElementById('fire').addEventListener('click',function(){if(firing)return;firing=true;res.textContent='';
- var a=+slider.value,rad=a*Math.PI/180,t=0;ball.setAttribute('opacity',1);
- var iv=setInterval(function(){t+=0.03;var d=232*t;var x=18+d*Math.cos(rad),y=61+d*Math.sin(rad);
-  ball.setAttribute('cx',x);ball.setAttribute('cy',y);
-  var out=y<19||y>103;var landed=x>=194;
-  if(out||landed||x>250){clearInterval(iv);firing=false;ball.setAttribute('opacity',0);
-   if(out){res.innerHTML='<span style="color:#ff6b6b;font-weight:900">WIDE.</span> '+Math.abs(a)+'&#176; from centre leaves the court before the far baseline. Geometry says: smaller angle, or aim crosscourt.';}
-   else{var dist=(232*t*23.77/232).toFixed(1);res.innerHTML='<span style="color:#76ff03;font-weight:900">IN!</span> Your shot travelled about '+ (23.77/Math.cos(rad)).toFixed(2) +' m at '+Math.abs(a)+'&#176;. Longer angle, longer court.';}
-  }},16);});
+// court dimensions at scale 0.06: length 23.77*0.06=1.426, singles width 8.23*0.06=0.494
+var HALF_LEN = 0.713;   // half court length along X axis
+var HALF_SGL = 0.247;   // singles half-width along Z axis
+
+var slider = document.getElementById('angle');
+var numIn  = document.getElementById('num');
+var ball3d = document.getElementById('ball3d');
+var res    = document.getElementById('result');
+var firing = false;
+var fireIv = null;
+
+// hide Melbourne text from GLTF
+document.getElementById('court3d').addEventListener('model-loaded', function(e){
+  e.detail.model.traverse(function(n){
+    var nm = (n.name||'').toLowerCase();
+    if(nm.indexOf('melb')>-1||nm.indexOf('text')>-1||nm.indexOf('sign')>-1||nm.indexOf('logo')>-1||nm.indexOf('banner')>-1||nm.indexOf('advert')>-1){
+      n.visible = false;
+    }
+  });
+});
+
+function syncInputs(){
+  numIn.value = slider.value;
+}
+slider.addEventListener('input', function(){ numIn.value = slider.value; });
+numIn.addEventListener('input', function(){
+  var v = Math.max(-60, Math.min(60, parseFloat(numIn.value)||0));
+  slider.value = v;
+});
+
+document.getElementById('fire').addEventListener('click', function(){
+  if(firing) return;
+  firing = true;
+  res.textContent = '';
+  var deg = +slider.value;
+  var rad = deg * Math.PI / 180;
+
+  // ball starts at near baseline centre, fires at angle
+  var bx = -HALF_LEN, bz = 0;
+  var speed = 0.032; // units per frame at 60fps feels
+  ball3d.setAttribute('visible', true);
+  ball3d.object3D.position.set(bx, 0.1, bz);
+
+  fireIv = setInterval(function(){
+    bx += speed * Math.cos(rad);
+    bz += speed * Math.sin(rad);
+    ball3d.object3D.position.set(bx, 0.1 + 0.18*Math.sin(Math.PI*((bx+HALF_LEN)/(2*HALF_LEN))), bz);
+
+    var wide   = Math.abs(bz) > HALF_SGL;
+    var landed = bx >= HALF_LEN;
+    var missed = bx > HALF_LEN + 0.15;
+
+    if(wide || landed || missed){
+      clearInterval(fireIv);
+      firing = false;
+      ball3d.setAttribute('visible', false);
+      if(wide){
+        res.innerHTML = '<span style="color:#ff6b6b;font-weight:900">WIDE.</span> ' + Math.abs(deg) + '&#176; from centre leaves the court before the far baseline. Geometry says: smaller angle, or aim crosscourt.';
+      } else {
+        var dist = (23.77 / Math.cos(rad)).toFixed(2);
+        res.innerHTML = '<span style="color:#76ff03;font-weight:900">IN!</span> Your shot travelled about ' + dist + ' m at ' + Math.abs(deg) + '&#176;. Longer angle, longer court.';
+      }
+    }
+  }, 16);
+});
 </script>
 </body></html>
