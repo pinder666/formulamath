@@ -1,58 +1,116 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The Court in 3D — The Tennis Formula</title><style>
+<title>The Court in 3D · The Tennis Formula</title>
+<script src="./aframe.min.js"></script>
+<style>
 *{margin:0;padding:0;box-sizing:border-box;}
-body{background:#0e0e12;color:#fff;font-family:Arial,Helvetica,sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:24px 12px 40px;overflow-x:hidden;}
-h1{font-size:24px;font-weight:900;color:#00e5ff;}
-.sub{color:#8a9aaa;font-size:13px;margin:6px 0 18px;text-align:center;}
-#stage{width:min(92vw,560px);height:min(72vw,430px);perspective:900px;touch-action:none;}
-#court{width:100%;height:100%;transform-style:preserve-3d;transform:rotateX(55deg) rotateZ(0deg);transition:transform .05s linear;}
-svg{width:100%;height:100%;}
-.stats{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:16px;max-width:560px;}
-.stat{background:#141e30;border:1px solid #2a3a5a;border-radius:8px;padding:8px 12px;text-align:center;}
-.stat .v{color:#ffe000;font-weight:900;font-size:16px;}
-.stat .l{color:#8a9aaa;font-size:10px;letter-spacing:1px;}
-.hint{color:#5a6a7a;font-size:11px;margin-top:14px;}
-a.back{color:#B8860B;font-size:12px;font-weight:900;text-decoration:none;margin-top:20px;letter-spacing:1px;}
+html,body{height:100%;}
+body{background:#0e0e12;color:#fff;font-family:Arial,Helvetica,sans-serif;height:100dvh;overflow:hidden;display:flex;flex-direction:column;align-items:center;padding:clamp(8px,1.6dvh,20px) 12px;}
+h1{font-size:clamp(15px,2.7dvh,24px);font-weight:900;color:#00e5ff;}
+.sub{color:#8a9aaa;font-size:clamp(10px,1.5dvh,13px);margin:3px 0 clamp(4px,1dvh,12px);text-align:center;}
+#stage{flex:1;min-height:80px;width:min(92vw,560px);position:relative;border-radius:10px;overflow:hidden;background:#0d1520;touch-action:none;}
+#stage a-scene{width:100%;height:100%;}
+.stats{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:clamp(4px,1dvh,12px);max-width:560px;}
+.stat{background:#141e30;border:1px solid #2a3a5a;border-radius:8px;padding:clamp(4px,0.8dvh,8px) 10px;text-align:center;}
+.stat .v{color:#ffe000;font-weight:900;font-size:clamp(11px,1.8dvh,16px);}
+.stat .l{color:#8a9aaa;font-size:clamp(7px,1.1dvh,10px);letter-spacing:1px;}
+.chk{background:#141e30;border:1.5px solid #B8860B;border-radius:10px;padding:clamp(6px,1.2dvh,12px) 12px;margin-top:clamp(4px,1dvh,12px);width:min(92vw,560px);}
+.chk .t{color:#ffe000;font-weight:900;font-size:clamp(10px,1.6dvh,14px);letter-spacing:1px;margin-bottom:6px;text-align:center;}
+.chk .r{display:flex;gap:6px;align-items:center;justify-content:center;}
+.chk input{flex:1;min-width:0;background:#0e0e12;border:1px solid #2a3a5a;border-radius:6px;color:#fff;font-weight:900;font-size:clamp(11px,1.6dvh,14px);padding:clamp(5px,1dvh,8px) 4px;text-align:center;}
+.chk input::placeholder{color:#5a6a7a;font-weight:700;font-size:clamp(9px,1.3dvh,12px);}
+.chk button{background:#B8860B;color:#fff;border:none;font-weight:900;font-size:clamp(10px,1.5dvh,13px);padding:clamp(5px,1dvh,9px) 14px;border-radius:8px;}
+#ck{color:#c8d8ea;font-size:clamp(9px,1.4dvh,12.5px);margin-top:5px;min-height:15px;text-align:center;}
+a.back{color:#B8860B;font-size:clamp(10px,1.4dvh,12px);font-weight:900;text-decoration:none;margin-top:clamp(4px,1dvh,12px);letter-spacing:1px;}
 </style></head><body>
 <h1>THE COURT IN 3D</h1>
 <div class="sub">Page 39, off the paper. Drag to spin. Every line is a measurement.</div>
-<div id="stage"><div id="court">
-<svg viewBox="0 0 260 130">
-  <rect x="10" y="10" width="240" height="110" fill="#2a5298" stroke="#fff" stroke-width="1.6" rx="1"/>
-  <rect x="10" y="24" width="240" height="82" fill="none" stroke="#fff" stroke-width="1"/>
-  <line x1="130" y1="10" x2="130" y2="120" stroke="#fff" stroke-width="1.8"/>
-  <line x1="66" y1="24" x2="66" y2="106" stroke="#fff" stroke-width="1"/>
-  <line x1="194" y1="24" x2="194" y2="106" stroke="#fff" stroke-width="1"/>
-  <line x1="66" y1="65" x2="194" y2="65" stroke="#fff" stroke-width="1"/>
-  <text x="130" y="8" fill="#ffe000" font-size="7" text-anchor="middle" font-weight="bold">23.77 m</text>
-  <text x="256" y="68" fill="#ffe000" font-size="7" text-anchor="middle" font-weight="bold" transform="rotate(90,256,68)">10.97 m</text>
-  <text x="98" y="47" fill="#ffea00" font-size="6" text-anchor="middle">6.40 m</text>
-  <text x="38" y="68" fill="#cfe8ff" font-size="6" text-anchor="middle">no-man's land</text>
-  <circle id="ball" cx="20" cy="65" r="4" fill="#dfff4f"/>
-</svg>
-</div></div>
+
+<div id="stage">
+  <a-scene embedded renderer="alpha:true;colorManagement:true" vr-mode-ui="enabled:false" device-orientation-permission-ui="enabled:false" loading-screen="enabled:false">
+    <a-assets>
+      <a-asset-item id="court-model" src="./tennis-court-cement.glb"></a-asset-item>
+    </a-assets>
+    <!-- fixed camera looking at the court from above-front -->
+    <a-camera id="cam" position="0 1.8 2.2" rotation="-38 0 0" look-controls="enabled:false" wasd-controls="enabled:false" fov="48"></a-camera>
+    <!-- court entity — drag rotates this -->
+    <a-entity id="courtEnt" rotation="0 -20 0">
+      <a-gltf-model id="court3d" src="#court-model" position="0 0 0" scale="0.06 0.06 0.06"></a-gltf-model>
+      <!-- ball flying the court length -->
+      <a-sphere id="flyball" color="#dfff4f" radius="0.04" position="-0.7 0.15 0" shadow></a-sphere>
+    </a-entity>
+    <a-light type="ambient" color="#cce8ff" intensity="1.4"></a-light>
+    <a-light type="directional" position="2 5 2" intensity="1.0" color="#ffffff"></a-light>
+    <a-light type="directional" position="-1 2 -2" intensity="0.4" color="#aaccff"></a-light>
+  </a-scene>
+</div>
+
 <div class="stats">
   <div class="stat"><div class="v">23.77 m</div><div class="l">FULL LENGTH</div></div>
   <div class="stat"><div class="v">10.97 m</div><div class="l">DOUBLES WIDTH</div></div>
   <div class="stat"><div class="v">8.23 m</div><div class="l">SINGLES WIDTH</div></div>
-  <div class="stat"><div class="v">6.40 × 4.115 m</div><div class="l">SERVICE BOX</div></div>
-  <div class="stat"><div class="v">260.76 m²</div><div class="l">DOUBLES AREA</div></div>
+  <div class="stat"><div class="v">6.40 &times; 4.115 m</div><div class="l">SERVICE BOX</div></div>
 </div>
-<div class="hint">The ball crossing the court is travelling 23.77 metres — count it.</div>
+<div class="chk">
+  <div class="t">CHECK YOUR PAGE 39 ANSWERS</div>
+  <div class="r">
+    <input id="c1" type="number" step="0.01" placeholder="Singles m&#178;">
+    <input id="c2" type="number" step="0.01" placeholder="Doubles m&#178;">
+    <input id="c3" type="number" step="0.01" placeholder="Box m&#178;">
+    <button id="check">CHECK</button>
+  </div>
+  <div id="ck"></div>
+</div>
 <a class="back" href="/tennis/">&#8592; THE AR COURT</a>
+
 <script>
-var court=document.getElementById('court'),stage=document.getElementById('stage');
-var rx=55,rz=0,dragging=false,lx=0,ly=0;
-function apply(){court.style.transform='rotateX('+rx+'deg) rotateZ('+rz+'deg)';}
-function down(x,y){dragging=true;lx=x;ly=y;}
-function move(x,y){if(!dragging)return;rz+=(x-lx)*0.4;rx-=(y-ly)*0.3;rx=Math.max(15,Math.min(80,rx));lx=x;ly=y;apply();}
-stage.addEventListener('mousedown',function(e){down(e.clientX,e.clientY);});
-window.addEventListener('mousemove',function(e){move(e.clientX,e.clientY);});
-window.addEventListener('mouseup',function(){dragging=false;});
-stage.addEventListener('touchstart',function(e){var t=e.touches[0];down(t.clientX,t.clientY);e.preventDefault();},{passive:false});
-stage.addEventListener('touchmove',function(e){var t=e.touches[0];move(t.clientX,t.clientY);e.preventDefault();},{passive:false});
-window.addEventListener('touchend',function(){dragging=false;});
-var ball=document.getElementById('ball'),t=0;
-setInterval(function(){t+=0.016;var p=(t%3)/3;ball.setAttribute('cx',20+220*p);ball.setAttribute('cy',65-40*Math.sin(Math.PI*p));},16);
+// drag to rotate the court
+var stage=document.getElementById('stage');
+var ent=document.getElementById('courtEnt');
+var ry=-20,rx=0,dragging=false,lx=0,ly=0;
+
+function setRot(){if(ent&&ent.object3D){ent.object3D.rotation.set(rx*Math.PI/180,ry*Math.PI/180,0);}}
+
+stage.addEventListener('pointerdown',function(e){dragging=true;lx=e.clientX;ly=e.clientY;stage.setPointerCapture(e.pointerId);});
+stage.addEventListener('pointermove',function(e){
+  if(!dragging)return;
+  ry+=(e.clientX-lx)*0.55;
+  rx-=(e.clientY-ly)*0.35;
+  rx=Math.max(-80,Math.min(80,rx));
+  lx=e.clientX;ly=e.clientY;
+  setRot();
+});
+stage.addEventListener('pointerup',function(){dragging=false;});
+stage.addEventListener('pointercancel',function(){dragging=false;});
+
+// ball flies the court length on a loop
+setInterval(function(){
+  var b=document.getElementById('flyball');
+  if(!b||!b.object3D)return;
+  var t=(Date.now()%3000)/3000;
+  var x=-0.7+1.4*t;
+  var y=0.15+0.5*Math.sin(Math.PI*t);
+  b.object3D.position.set(x,y,0);
+},33);
+
+// hide Melbourne/venue text from GLTF
+document.getElementById('court3d').addEventListener('model-loaded',function(e){
+  e.detail.model.traverse(function(n){
+    var nm=(n.name||'').toLowerCase();
+    if(nm.indexOf('melb')>-1||nm.indexOf('text')>-1||nm.indexOf('sign')>-1||nm.indexOf('logo')>-1||nm.indexOf('banner')>-1||nm.indexOf('advert')>-1){
+      n.visible=false;
+    }
+  });
+});
+
+// answer checker
+document.getElementById('check').addEventListener('click',function(){
+  var T=[[+document.getElementById('c1').value,195.63],[+document.getElementById('c2').value,260.76],[+document.getElementById('c3').value,26.34]];
+  var names=['Singles','Doubles','Service box'],out=[];
+  for(var i=0;i<3;i++){var v=T[i][0],tt=T[i][1];
+    if(!v){out.push(names[i]+': type your answer');}
+    else if(Math.abs(v-tt)<=0.5){out.push('&#9989; '+names[i]+' correct');}
+    else{out.push('&#10060; '+names[i]+': not quite, back to page 39');}}
+  document.getElementById('ck').innerHTML=out.join(' &nbsp;&middot;&nbsp; ');
+});
 </script>
 </body></html>
